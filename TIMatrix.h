@@ -1,85 +1,14 @@
-#ifndef TIMATRIX_LIBRARY_H
-#define TIMATRIX_LIBRARY_H
+//
+// Created by cmk91 on 5/26/21.
+//
+
+#ifndef TIMATRIX_TIMATRIX_H
+#define TIMATRIX_TIMATRIX_H
 /**
  * Typed Index Matrix allows you to create a type for each index in your matrix, giving you some type safety so that
  * you don't mix up which iteration goes into which dimension.
  */
 #include <memory>
-
-#define IDX_STORAGE_TY int
-
-template<typename ty>
-class index {
-  IDX_STORAGE_TY n;
-public:
-  index& operator ++() {
-    n++;
-    return *this;
-  }
-
-  index& operator +=(int d) {
-    n = n + d;
-    return *this;
-  }
-
-  index operator + (const int d) const {
-    return index(n + d);
-  }
-
-  index operator - (const int d) const {
-    return index(n - d);
-  }
-
-  operator ty() {
-    return ty(n);
-  }
-
-  explicit operator int() const {
-    return n;
-  }
-
-  bool operator < (const index &rhs) const {
-    return n < rhs.n;
-  }
-
-  bool operator > (const index &rhs) const {
-    return n > rhs.n;
-  }
-
-  bool operator < (const int &rhs) const {
-    return n < rhs;
-  }
-
-  bool operator > (const int &rhs) const {
-    return n > rhs;
-  }
-  bool operator <= (const index &rhs) const {
-    return n <= rhs.n;
-  }
-
-  bool operator >= (const index &rhs) const {
-    return n >= rhs.n;
-  }
-
-  bool operator <= (const int &rhs) const {
-    return n <= rhs;
-  }
-
-  bool operator >= (const int &rhs) const {
-    return n >= rhs;
-  }
-
-
-  explicit index(int d) {
-    n = d;
-  }
-
-  int getN() const {
-    return n;
-  }
-};
-
-#define indexify(tyname) struct tyname : index<tyname> {tyname (int d) : index(d) {}}
 
 template <typename indexty, typename returnty>
 struct LayeredMatrix {
@@ -164,18 +93,4 @@ this->init(i1) \
 }\
 };
 
-// Example usage of these templates
-
-// indexify(iteration_idx);
-// indexify(height_idx);
-// indexify(width_idx);
-// struct CLogMatrix : threeDimMat<bool, iteration_idx, height_idx, width_idx>, TopLevelTraits {
-//   CLogMatrix(iteration_idx iterations, height_idx height, width_idx width) {
-//     this->init(iterations, height, width);
-//   }
-// };
-
-
-
-
-#endif //TIMATRIX_LIBRARY_H
+#endif //TIMATRIX_TIMATRIX_H
