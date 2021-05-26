@@ -51,26 +51,25 @@ struct TopLevelTraits {
 template <typename ty, typename idx1>
 struct OneDimMat : LayeredMatrix<idx1, ty> {
   void init(idx1 a) {
-    this->set_mat(new ty[int(a)]);
+    this->set_mat(new ty[int(a)], a);
   }
 };
 
 template <typename ty, typename idx1, typename idx2>
 struct TwoDimMat : LayeredMatrix<idx1, OneDimMat<ty, idx2>> {
   void init(idx1 a, idx2 b) {
-    this->set_mat(new oneDimMat<ty, idx2>[int(a)]);
-    for (idx1 i = 0; i < a; ++i) {
+    this->set_mat(new OneDimMat<ty, idx2>[int(a)], a);
+    for (idx1 i(0); i < a; ++i) {
       this->get(i).init(b);
     }
   }
 };
 
-
 template <typename ty, typename idx1, typename idx2, typename idx3>
 struct ThreeDimMat : LayeredMatrix<idx1, TwoDimMat<ty, idx2, idx3>> {
   void init(idx1 a, idx2 b, idx3 c) {
-    this->set_mat(new twoDimMat<ty, idx2, idx3>[int(a)]);
-    for (idx1 i = 0; i < a; ++i) {
+    this->set_mat(new TwoDimMat<ty, idx2, idx3>[int(a)], a);
+    for (idx1 i(0); i < a; ++i) {
       this->get(i).init(b, c);
     }
   }
@@ -79,8 +78,8 @@ struct ThreeDimMat : LayeredMatrix<idx1, TwoDimMat<ty, idx2, idx3>> {
 template <typename ty, typename idx1, typename idx2, typename idx3, typename idx4>
 struct FourDimMat : LayeredMatrix<idx1, ThreeDimMat<ty, idx2, idx3, idx4>> {
   void init(idx1 a, idx2 b, idx3 c, idx4 d) {
-    this->set_mat(new threeDimMat<ty, idx2, idx3, idx4>[int(a)]);
-    for (idx1 i = 0; i < a; ++i) {
+    this->set_mat(new ThreeDimMat<ty, idx2, idx3, idx4>[int(a)], a);
+    for (idx1 i(0); i < a; ++i) {
       get(i).init(b, c, d);
     }
   }
@@ -101,7 +100,7 @@ this->init(i1, i2, i3) \
 #define declare_two_dim_mat(name, type, idx1, idx2) \
 struct name : TwoDimMat<type, idx1, idx2>, TopLevelTraits { \
 name(idx1 i1, idx2 i2) { \
-this->init(i1, i2) \
+this->init(i1, i2); \
 }\
 };
 #define declare_one_dim_mat(name, type, idx1) \
