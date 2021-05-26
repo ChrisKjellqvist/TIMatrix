@@ -77,6 +77,6 @@ public:
   }
 };
 
-#define indexify(tyname) struct tyname : index<tyname> {tyname (int d) : index(d) {}}
+#define indexify(tyname) struct tyname : index<tyname> {explicit tyname (int d) : index(d) {}}
 
 #endif //TIMATRIX_TIINDEX_H
