@@ -139,6 +139,31 @@ struct fourDimMat : LayeredMatrix<idx1, threeDimMat<ty, idx2, idx3, idx4>> {
   }
 };
 
+#define declare_four_dim_mat(name, type, idx1, idx2, idx3, idx4) \
+struct name : fourDimMat<type, idx1, idx2, idx3, idx4>, TopLevelTraits { \
+name(idx1 i1, idx2 i2, idx3 i3, idx4 i4) { \
+this->init(i1, i2, i3, i4) \
+}\
+};
+#define declare_three_dim_mat(name, type, idx1, idx2, idx3, idx4) \
+struct name : threeDimMat<type, idx1, idx2, idx3>, TopLevelTraits { \
+name(idx1 i1, idx2 i2, idx3 i3) { \
+this->init(i1, i2, i3) \
+}\
+};
+#define declare_two_dim_mat(name, type, idx1, idx2) \
+struct name : twoDimMat<type, idx1, idx2>, TopLevelTraits { \
+name(idx1 i1, idx2 i2) { \
+this->init(i1, i2) \
+}\
+};
+#define declare_one_dim_mat(name, type, idx1) \
+struct name : oneDimMat<type, idx1>, TopLevelTraits { \
+name(idx1 i1) { \
+this->init(i1) \
+}\
+};
+
 // Example usage of these templates
 
 // indexify(iteration_idx);
