@@ -9,6 +9,7 @@
  * you don't mix up which iteration goes into which dimension.
  */
 #include <memory>
+#include "TIIndex.h"
 
 template <typename indexty, typename returnty>
 struct LayeredMatrix {
