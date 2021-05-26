@@ -7,7 +7,7 @@ results in compile time errors. Of course you can still use ints to index into t
 matrix because preventing that might be unnecessarily prohibitive. Something to think
 about...
 
-###Reasoning
+### Reasoning
 I've lately had to write a lot of code with high dimension matrixes and I
 often run into problems where I accidentally use `i` or `j` in the wrong position
 when indexing into these matrices. Sometimes I use `i` twice, etc... It's not
