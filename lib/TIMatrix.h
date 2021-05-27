@@ -15,6 +15,7 @@
 template <typename indexty, typename returnty>
 struct LayeredMatrix {
   std::unique_ptr<returnty[]> mat = nullptr;
+  using size_type = indexty;
   size_t mat_size;
   bool initialized = false;
   returnty& operator[](indexty idx) {
@@ -91,22 +92,29 @@ name(idx1 i1, idx2 i2, idx3 i3, idx4 i4) { \
 this->init(i1, i2, i3, i4) \
 }\
 };
-#define declare_three_dim_mat(name, type, idx1, idx2, idx3, idx4) \
+#define declare_three_dim_mat(name, type, idx1, idx2, idx3) \
+declare_free_index(idx1) \
+declare_free_index(idx2) \
+declare_free_index(idx3) \
 struct name : ThreeDimMat<type, idx1, idx2, idx3>, TopLevelTraits { \
 name(idx1 i1, idx2 i2, idx3 i3) { \
 this->init(i1, i2, i3) \
 }\
 };
 #define declare_two_dim_mat(name, type, idx1, idx2) \
+declare_free_index(idx1) \
+declare_free_index(idx2) \
 struct name : TwoDimMat<type, idx1, idx2>, TopLevelTraits { \
 name(idx1 i1, idx2 i2) { \
 this->init(i1, i2); \
 }\
 };
+
 #define declare_one_dim_mat(name, type, idx1) \
+declare_free_index(idx1) \
 struct name : OneDimMat<type, idx1>, TopLevelTraits { \
 name(idx1 i1) { \
-this->init(i1) \
+this->init(i1); \
 }\
 };
 
