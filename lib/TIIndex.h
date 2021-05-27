@@ -62,11 +62,6 @@ public:
     return static_cast<size_t>(n);
   }
 
-//  TODO - fix
-//  template<typename other_idx>
-//  free_index (const other_idx &q): n(q.n) {
-//  }
-
   bool operator<(const free_index &rhs) const {
     return n < rhs.n;
   }
