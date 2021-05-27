@@ -14,7 +14,11 @@ public:
         n++;
         return *this;
     }
-
+    free_index operator++(int) {
+        auto ret = *this;
+        n++;
+        return ret;
+    }
     free_index &operator+=(int d) {
         n = n + d;
         return *this;

@@ -33,13 +33,16 @@ void sample1(){
 
 declare_one_dim_mat(oned, int, idx)
 
+#include <algorithm>
+
 void sample2(){
     oned mx(11_idx);
 
     auto i = 0;
-    for(auto& e: mx){
-        e = i++;
-    }
+    auto monotonic = [&i](){
+        return i++;
+    };
+    std::generate(mx.begin(), mx.end(), monotonic);
 
     auto evens = [](idx idx_val) {
         return idx_val.getN() % 2 == 0;
@@ -49,6 +52,25 @@ void sample2(){
     }
 }
 
+void sample3(){
+    oned mx(11_idx);
+
+    auto i = 2;
+    auto monotonic = [&i](){
+        i *= 2;
+        return i;
+    };
+
+    auto evens = [](idx idx_val) {
+        return idx_val.getN() % 2 == 0;
+    };
+    auto evenslice = slice(mx, evens);
+    std::generate(evenslice.begin(), evenslice.end(), monotonic);
+
+    for(auto e: slice(mx, evens)){
+        std::cout << e << "\n";
+    }
+}
 int main(){
-    sample2();
+    sample3();
 }

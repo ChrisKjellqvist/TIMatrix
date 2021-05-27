@@ -9,4 +9,4 @@ set(CMAKE_CXX_FLAGS "-O2 -march=native -Wall -Wconversion -pedantic -Wextra -Wca
 
 include_directories(lib)
 
-add_executable(TIMatrix tests/main.cpp)
+add_executable(TIMatrix tests/main.cpp lib/Slices.h)
