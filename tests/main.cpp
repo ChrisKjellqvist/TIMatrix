@@ -23,6 +23,8 @@ void sample1(){
     test_matrix2D q(i,j);
 
     i = 1_height;
+//    TODO - we want this to work
+//    i = height(j);
 
     for (auto even_indexed_num: q[i]) {
         even_indexed_num = 4;
@@ -73,4 +75,5 @@ void sample3(){
 }
 int main(){
     sample3();
+
 }

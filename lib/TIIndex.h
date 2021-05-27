@@ -9,10 +9,18 @@
 
 #define IDX_STORAGE_TY int
 
+namespace std {
+  struct typed_index_tag {};
+}
+
 template<typename ty>
 class free_index : std::random_access_iterator_tag {
   IDX_STORAGE_TY n;
 public:
+  typedef free_index difference_type;
+  typedef ty value_type;
+  typedef std::typed_index_tag iterator_category;
+
   free_index &operator++() {
     n++;
     return *this;
@@ -24,20 +32,21 @@ public:
     return ret;
   }
 
-  free_index &operator+=(int d) {
+  free_index &operator+=(difference_type d) {
     n = n + d;
     return *this;
   }
 
-  free_index &operator-=(int d) {
-
+  free_index &operator-=(difference_type d) {
+    n = n - d;
+    return *this;
   }
 
-  free_index operator+(const int d) const {
+  free_index operator+(const difference_type d) const {
     return free_index(n + d);
   }
 
-  free_index operator-(const int d) const {
+  free_index operator-(const difference_type d) const {
     return free_index(n - d);
   }
 
@@ -52,6 +61,11 @@ public:
   explicit operator size_t() const {
     return static_cast<size_t>(n);
   }
+
+//  TODO - fix
+//  template<typename other_idx>
+//  free_index (const other_idx &q): n(q.n) {
+//  }
 
   bool operator<(const free_index &rhs) const {
     return n < rhs.n;
@@ -85,7 +99,7 @@ public:
     return n >= rhs;
   }
 
-  explicit free_index(int d) {
+  explicit free_index(int32_t d) {
     n = d;
   }
 
@@ -93,6 +107,7 @@ public:
     return n;
   }
 };
+
 
 #define declare_free_index(tyname) struct tyname : free_index<tyname> { explicit tyname (IDX_STORAGE_TY d) : free_index(d) {}}; \
 tyname operator "" _ ## tyname (unsigned long long value){ \

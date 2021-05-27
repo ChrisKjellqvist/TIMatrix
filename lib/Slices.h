@@ -13,6 +13,7 @@ struct IteratorFilter{
 
     using size_type = typename INDEXABLE_RANGE::size_type;
     size_type index = size_type(0);
+
     // Do we do arithmetic as well? we probably should
     IteratorFilter operator++(){
         do{

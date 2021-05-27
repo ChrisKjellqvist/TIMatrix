@@ -12,24 +12,29 @@
 #include <cassert>
 #include "TIIndex.h"
 
-template <typename indexty, typename returnty>
+template<typename indexty, typename returnty>
 struct LayeredMatrix {
   std::unique_ptr<returnty[]> mat = nullptr;
   using size_type = indexty;
   size_t mat_size;
   bool initialized = false;
-  returnty& operator[](indexty idx) {
-      return mat.get()[idx.getN()];
+
+  returnty &operator[](indexty idx) {
+    return mat.get()[idx.getN()];
   }
-  returnty* begin(){
-      return mat.get();
+
+  returnty *begin() {
+    return mat.get();
   }
-  returnty* end(){
-      return mat.get() + mat_size;
+
+  returnty *end() {
+    return mat.get() + mat_size;
   }
-  ~LayeredMatrix(){
-      assert(initialized);
+
+  ~LayeredMatrix() {
+    assert(initialized);
   }
+
 protected:
   template<typename ARRAY_TYPE>
   void set_mat(ARRAY_TYPE a, indexty size) {
@@ -38,7 +43,8 @@ protected:
     initialized = true;
     mat_size = static_cast<size_t>(size);
   }
-  returnty& get(indexty idx) {
+
+  returnty &get(indexty idx) {
     return mat.get()[int(idx)];
   }
 
@@ -46,17 +52,18 @@ protected:
 
 struct TopLevelTraits {
   TopLevelTraits(const TopLevelTraits &_) = delete;
+
   TopLevelTraits() = default;
 };
 
-template <typename ty, typename idx1>
+template<typename ty, typename idx1>
 struct OneDimMat : LayeredMatrix<idx1, ty> {
   void init(idx1 a) {
     this->set_mat(new ty[int(a)], a);
   }
 };
 
-template <typename ty, typename idx1, typename idx2>
+template<typename ty, typename idx1, typename idx2>
 struct TwoDimMat : LayeredMatrix<idx1, OneDimMat<ty, idx2>> {
   void init(idx1 a, idx2 b) {
     this->set_mat(new OneDimMat<ty, idx2>[int(a)], a);
@@ -66,7 +73,7 @@ struct TwoDimMat : LayeredMatrix<idx1, OneDimMat<ty, idx2>> {
   }
 };
 
-template <typename ty, typename idx1, typename idx2, typename idx3>
+template<typename ty, typename idx1, typename idx2, typename idx3>
 struct ThreeDimMat : LayeredMatrix<idx1, TwoDimMat<ty, idx2, idx3>> {
   void init(idx1 a, idx2 b, idx3 c) {
     this->set_mat(new TwoDimMat<ty, idx2, idx3>[int(a)], a);
@@ -76,7 +83,7 @@ struct ThreeDimMat : LayeredMatrix<idx1, TwoDimMat<ty, idx2, idx3>> {
   }
 };
 
-template <typename ty, typename idx1, typename idx2, typename idx3, typename idx4>
+template<typename ty, typename idx1, typename idx2, typename idx3, typename idx4>
 struct FourDimMat : LayeredMatrix<idx1, ThreeDimMat<ty, idx2, idx3, idx4>> {
   void init(idx1 a, idx2 b, idx3 c, idx4 d) {
     this->set_mat(new ThreeDimMat<ty, idx2, idx3, idx4>[int(a)], a);
