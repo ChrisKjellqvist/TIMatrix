@@ -19,6 +19,7 @@ struct LayeredMatrix {
   size_t mat_size;
   bool initialized = false;
   typedef indexty LayerIterator;
+  typedef returnty SubLayerType;
 
   returnty &operator[](indexty idx) {
     return mat.get()[idx.getN()];
