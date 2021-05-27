@@ -50,6 +50,10 @@ public:
     return free_index(n - d);
   }
 
+  free_index operator-() const {
+    return free_index(-1 * n);
+  }
+
   operator ty() {
     return ty(n);
   }
