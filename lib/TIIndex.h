@@ -103,6 +103,12 @@ public:
   }
 };
 
+template <typename res_type, typename input_ty>
+res_type type_conv (const input_ty &I) {
+  return res_type(IDX_STORAGE_TY(I));
+}
+
+
 
 #define declare_free_index(tyname) struct tyname : free_index<tyname> { explicit tyname (IDX_STORAGE_TY d) : free_index(d) {}}; \
 tyname operator "" _ ## tyname (unsigned long long value){ \
