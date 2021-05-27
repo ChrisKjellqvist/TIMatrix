@@ -4,86 +4,94 @@
 
 #ifndef TIMATRIX_TIINDEX_H
 #define TIMATRIX_TIINDEX_H
+
+#include <iterator>
+
 #define IDX_STORAGE_TY int
 
 template<typename ty>
-class free_index {
-    IDX_STORAGE_TY n;
+class free_index : std::random_access_iterator_tag {
+  IDX_STORAGE_TY n;
 public:
-    free_index &operator++() {
-        n++;
-        return *this;
-    }
-    free_index operator++(int) {
-        auto ret = *this;
-        n++;
-        return ret;
-    }
-    free_index &operator+=(int d) {
-        n = n + d;
-        return *this;
-    }
+  free_index &operator++() {
+    n++;
+    return *this;
+  }
 
-    free_index operator+(const int d) const {
-        return free_index(n + d);
-    }
+  free_index operator++(int) {
+    auto ret = *this;
+    n++;
+    return ret;
+  }
 
-    free_index operator-(const int d) const {
-        return free_index(n - d);
-    }
+  free_index &operator+=(int d) {
+    n = n + d;
+    return *this;
+  }
 
-    operator ty() {
-        return ty(n);
-    }
+  free_index &operator-=(int d) {
 
-    explicit operator int() const {
-        return n;
-    }
+  }
 
-    explicit operator size_t() const {
-        return static_cast<size_t>(n);
-    }
+  free_index operator+(const int d) const {
+    return free_index(n + d);
+  }
 
-    bool operator<(const free_index &rhs) const {
-        return n < rhs.n;
-    }
+  free_index operator-(const int d) const {
+    return free_index(n - d);
+  }
 
-    bool operator>(const free_index &rhs) const {
-        return n > rhs.n;
-    }
+  operator ty() {
+    return ty(n);
+  }
 
-    bool operator<(const int &rhs) const {
-        return n < rhs;
-    }
+  explicit operator int() const {
+    return n;
+  }
 
-    bool operator>(const int &rhs) const {
-        return n > rhs;
-    }
+  explicit operator size_t() const {
+    return static_cast<size_t>(n);
+  }
 
-    bool operator<=(const free_index &rhs) const {
-        return n <= rhs.n;
-    }
+  bool operator<(const free_index &rhs) const {
+    return n < rhs.n;
+  }
 
-    bool operator>=(const free_index &rhs) const {
-        return n >= rhs.n;
-    }
+  bool operator>(const free_index &rhs) const {
+    return n > rhs.n;
+  }
 
-    bool operator<=(const int &rhs) const {
-        return n <= rhs;
-    }
+  bool operator<(const int &rhs) const {
+    return n < rhs;
+  }
 
-    bool operator>=(const int &rhs) const {
-        return n >= rhs;
-    }
+  bool operator>(const int &rhs) const {
+    return n > rhs;
+  }
 
+  bool operator<=(const free_index &rhs) const {
+    return n <= rhs.n;
+  }
 
-    explicit free_index(int d) {
-        n = d;
-    }
+  bool operator>=(const free_index &rhs) const {
+    return n >= rhs.n;
+  }
 
-    [[nodiscard]] int getN() const {
-        return n;
-    }
+  bool operator<=(const int &rhs) const {
+    return n <= rhs;
+  }
+
+  bool operator>=(const int &rhs) const {
+    return n >= rhs;
+  }
+
+  explicit free_index(int d) {
+    n = d;
+  }
+
+  [[nodiscard]] int getN() const {
+    return n;
+  }
 };
 
 #define declare_free_index(tyname) struct tyname : free_index<tyname> { explicit tyname (IDX_STORAGE_TY d) : free_index(d) {}}; \
