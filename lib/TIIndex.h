@@ -94,6 +94,23 @@ public:
     return n >= rhs;
   }
 
+  friend bool operator<(int lhs, const free_index &rhs) {
+    return lhs < rhs.n;
+  }
+
+  friend bool operator>(int lhs, const free_index &rhs) {
+    return lhs > rhs.n;
+  }
+
+  friend bool operator<=(int lhs, const free_index &rhs) {
+    return lhs <= rhs.n;
+  }
+
+  friend bool operator>=(int lhs, const free_index &rhs) {
+    return lhs >= rhs.n;
+  }
+
+
   explicit free_index(int32_t d) {
     n = d;
   }
