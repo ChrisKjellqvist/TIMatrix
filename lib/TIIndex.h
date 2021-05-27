@@ -14,7 +14,7 @@ namespace std {
 }
 
 template<typename ty>
-class free_index : std::random_access_iterator_tag {
+class free_index {
   IDX_STORAGE_TY n;
 public:
   typedef free_index difference_type;
