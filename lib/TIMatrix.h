@@ -16,7 +16,7 @@ template <typename indexty, typename returnty>
 struct LayeredMatrix {
   std::unique_ptr<returnty[]> mat = nullptr;
   using size_type = indexty;
-  size_t mat_size;
+  size_t mat_size = 0;
   bool initialized = false;
   returnty& operator[](indexty idx) {
       return mat.get()[idx.getN()];
@@ -30,6 +30,9 @@ struct LayeredMatrix {
   ~LayeredMatrix(){
       assert(initialized);
   }
+  LayeredMatrix() = default;
+  LayeredMatrix(const LayeredMatrix &_) = delete;
+
 protected:
   template<typename ARRAY_TYPE>
   void set_mat(ARRAY_TYPE a, indexty size) {
@@ -44,13 +47,8 @@ protected:
 
 };
 
-struct TopLevelTraits {
-  TopLevelTraits(const TopLevelTraits &_) = delete;
-  TopLevelTraits() = default;
-};
-
 template <typename ty, typename idx1>
-struct OneDimMat : LayeredMatrix<idx1, ty> {
+struct OneDimMat : LayeredMatrix<idx1, ty>{
   void init(idx1 a) {
     this->set_mat(new ty[int(a)], a);
   }
@@ -87,7 +85,7 @@ struct FourDimMat : LayeredMatrix<idx1, ThreeDimMat<ty, idx2, idx3, idx4>> {
 };
 
 #define declare_four_dim_mat(name, type, idx1, idx2, idx3, idx4) \
-struct name : FourDimMat<type, idx1, idx2, idx3, idx4>, TopLevelTraits { \
+struct name : FourDimMat<type, idx1, idx2, idx3, idx4> { \
 name(idx1 i1, idx2 i2, idx3 i3, idx4 i4) { \
 this->init(i1, i2, i3, i4) \
 }\
@@ -96,7 +94,7 @@ this->init(i1, i2, i3, i4) \
 declare_free_index(idx1) \
 declare_free_index(idx2) \
 declare_free_index(idx3) \
-struct name : ThreeDimMat<type, idx1, idx2, idx3>, TopLevelTraits { \
+struct name : ThreeDimMat<type, idx1, idx2, idx3> { \
 name(idx1 i1, idx2 i2, idx3 i3) { \
 this->init(i1, i2, i3) \
 }\
@@ -104,7 +102,7 @@ this->init(i1, i2, i3) \
 #define declare_two_dim_mat(name, type, idx1, idx2) \
 declare_free_index(idx1) \
 declare_free_index(idx2) \
-struct name : TwoDimMat<type, idx1, idx2>, TopLevelTraits { \
+struct name : TwoDimMat<type, idx1, idx2> { \
 name(idx1 i1, idx2 i2) { \
 this->init(i1, i2); \
 }\
@@ -112,7 +110,7 @@ this->init(i1, i2); \
 
 #define declare_one_dim_mat(name, type, idx1) \
 declare_free_index(idx1) \
-struct name : OneDimMat<type, idx1>, TopLevelTraits { \
+struct name : OneDimMat<type, idx1> { \
 name(idx1 i1) { \
 this->init(i1); \
 }\
