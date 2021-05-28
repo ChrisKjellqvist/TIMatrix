@@ -47,7 +47,7 @@ struct idx_into_struct {
   constexpr static int max_depth() {return std::tuple_size<idxtupty>{};}
   template <size_t i>
   static decltype(&matty::SubLayerType) index(idxtupty &tup, matty &mat) {
-    return idx_into_struct<idxtupty, decltype(matty::SubLayerType)>::index<i-1>(tup, mat[std::get<i>(tup)]);
+    return idx_into_struct<idxtupty, decltype(matty::SubLayerType)>::index<i+1>(tup, mat[std::get<i>(tup)]);
   }
   template <>
   static decltype(&matty::SubLayerType) index<max_depth()>(idxtupty &tup, matty &mat) {
@@ -77,7 +77,7 @@ public:
 
 
   decltype(*(IT())) &operator*() {
-    return idx_into_struct<indextypes, CONTAINER_TY>::index<enumerator_dims>(current, *container);
+    return idx_into_struct<indextypes, CONTAINER_TY>::index<0>(current, *container);
   }
 
   bool operator!=(IteratorEnumerator rhs) {
