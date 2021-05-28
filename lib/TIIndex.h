@@ -98,6 +98,10 @@ public:
     return n >= rhs;
   }
 
+  bool operator==(const free_index rhs) const {
+    return n == rhs.n;
+  }
+
   friend bool operator<(int lhs, const free_index &rhs) {
     return lhs < rhs.n;
   }
