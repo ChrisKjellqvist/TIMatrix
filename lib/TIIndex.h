@@ -13,6 +13,7 @@ namespace std {
   struct typed_index_tag {};
 }
 
+
 template<typename ty>
 class free_index {
   IDX_STORAGE_TY n;
@@ -118,13 +119,23 @@ public:
     return lhs >= rhs.n;
   }
 
-
   explicit free_index(int32_t d) {
     n = d;
   }
 
   [[nodiscard]] int getN() const {
     return n;
+  }
+};
+
+// purposefully make conversion operators implicit
+struct int_index : free_index<int_index> {
+  int_index(int d) : free_index<int_index>(d) {}
+  operator int() const {
+    return getN();
+  }
+  operator size_t() const {
+    return static_cast<size_t>(getN());
   }
 };
 
