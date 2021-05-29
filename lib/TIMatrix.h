@@ -22,6 +22,8 @@ struct LayeredMatrix {
   typedef returnty SubLayerType;
 
   returnty &operator[](indexty idx) {
+    // how much of a performance thing is this? I hope it doesn't serialize our pipeline
+    assert(initialized);
     return mat.get()[idx.getN()];
   }
 

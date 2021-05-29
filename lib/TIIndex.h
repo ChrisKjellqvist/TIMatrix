@@ -34,21 +34,21 @@ public:
   }
 
   free_index &operator+=(difference_type d) {
-    n = n + d;
+    n = n + d.n;
     return *this;
   }
 
   free_index &operator-=(difference_type d) {
-    n = n - d;
+    n = n - d.n;
     return *this;
   }
 
   free_index operator+(const difference_type d) const {
-    return free_index(n + d);
+    return free_index(n + d.n);
   }
 
   free_index operator-(const difference_type d) const {
-    return free_index(n - d);
+    return free_index(n - d.n);
   }
 
   free_index operator-() const {
@@ -141,6 +141,9 @@ struct int_index : free_index<int_index> {
 
 
 #define declare_free_index(tyname) struct tyname : free_index<tyname> { explicit tyname (IDX_STORAGE_TY d) : free_index(d) {}}; \
+tyname operator "" _ ## tyname (unsigned long long value);
+
+#define add_UDL_idx(tyname) \
 tyname operator "" _ ## tyname (unsigned long long value){ \
 return tyname(static_cast<IDX_STORAGE_TY>(value)); \
 }
