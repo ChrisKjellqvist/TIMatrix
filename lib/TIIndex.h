@@ -13,6 +13,10 @@ namespace std {
   struct typed_index_tag {};
 }
 
+template<typename idx2, typename idx1>
+idx2 index_cast(const idx1 &I) {
+  return idx2(IDX_STORAGE_TY(I));
+}
 
 template<typename ty>
 class free_index {
