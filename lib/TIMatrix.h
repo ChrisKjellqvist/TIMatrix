@@ -27,6 +27,11 @@ struct LayeredMatrix {
     return mat.get()[idx.getN()];
   }
 
+  const returnty &operator[](indexty idx) const {
+    assert(initialized);
+    return mat.get()[idx.getN()];
+  }
+
   returnty *begin() {
     return mat.get();
   }
