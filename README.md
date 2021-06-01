@@ -3,71 +3,102 @@
 Templated multi-dimensional array class that supports having a unique type for each
 dimension in the matrix. A two-dimensional array might have an x and y dimension,
 and now we can have x dimension and y dimension types. Incorrect uses of these types
-results in compile time errors. Of course you can still use ints to index into the
-matrix because preventing that might be unnecessarily prohibitive. Something to think
-about...
+results in compile time errors. Using `int`s as an index types now requires explicitly
+allowing that behavior.
 
-### Reasoning
-I've lately had to write a lot of code with high dimension matrixes and I
-often run into problems where I accidentally use `i` or `j` in the wrong position
-when indexing into these matrices. Sometimes I use `i` twice, etc... It's not
-totally uncommon. What occurred to me though is that each dimension has a semantic
-meaning and the type `int` does not. You could rename all of your index variable
-names to `row` and `column` but even so you'd have to remember which dimension
-corresponds to `row` and such. Better naming is a decent solution but not as
-powerful as compile time checking!
+## Examples
 
-Consider the following example. You're working on a codebase that you're unfamiliar
-with and you see the input is this array.
+### Basic Example
 ```c++
-int xfc_512b_f(int *****ar) {
-  ...
-  for (int i = 0; i < func1(); ++i) {
-    for (int j = 0; j < func2(); ++j) {
-      for (int k = 0; k < func3(); ++k) {
-        // some later use of the array
-        int q = ar[i][j][i][4][k];        
-      }
+// amount you need to pay your employee
+double *paycheck_amts;
+// amount of sales tax collected during a transaction
+double *sales_tax;
+
+void pay_employees() {
+  for (int i = 0; i < num_employees(); ++i) {
+    // accidentally used wrong array!! Now employees are being paid a fraction
+    // of what they're owed!
+    pay_employee_by_id(i, sales_tax[i]);
+  }
+}
+```
+
+In the above example, there are two arrays with the same type signatures but
+are indexed by distinctly different value types (employee ID and receipt number).
+But because types match when using `int`s to index, the compiler will let this
+erroneous behavior fly... 
+
+Consider how typed indexes can help with the following solution.
+``` c++
+// introduce index types
+declare_free_index(employee_id);
+declare_free_index(receipt_num);
+// declare matrices that use these index types
+// paychecks are `double` typed and are indexed by employee_id
+declare_one_dim_mat(paycheck_ar, double, employee_id);
+// sales taxes are also `double` values but are indexed by receipt number
+declare_one_dim_mat(sales_tax_ar, double, receipt_num);
+
+paycheck_ar paycheck_amts;
+sales_tax_ar sales_tax;
+
+void pay_employees() {
+  for (employee_id i(0); i < num_employees(); ++i) {
+  // ERROR! No conversion from employee_id to receipt_num!
+    pay_employee_by_id(i, sales_tax[i]);
+  }
+}
+```
+
+In this scenario, the for loop uses an employee_id instead of an int,
+resulting in a compile time error that prevents indexing into sales tax
+with an employee ID.
+
+### Multi-Dimensional Array Example
+
+```c++
+void clear_game_board(int** board, int width, int height) {
+  for(int i = 0; i < width; ++i) {
+    for(int j = 0; j < height; ++j) {
+      board[i][j] = 0;
     }
   }
 }
 ```
 
-This is not always fun to try to figure out. You'd have to look at call sites for
-`xfc_512b_f` and try and deduce what the input arguments are and what each dimension
-of the array means. And even if you know what the dimensions mean, did the developer
-_mean_ to use the index `i` twice or is that the bug? Hard to say.
-
-With Typed Index Matrices it is much harder to purposefully misuse indexes, and the
-definition of each dimension now becomes explicit like so.
+Is this code correct? Hard to know without checking out the initialization of the array
+to see if the developer is doing height or width first for dimensions into the board.
+The code compiles, so the only way of knowing is when you get a segfault...
 
 ```c++
-// Some header file
-
-// Declare index types
-indexify(day_idx);
-indexify(employee_id_idx);
-indexify(report_idx);
-declare_three_dim_mat(my_matrix, int, day_idx, employee_id_idx, report_idx);
-
-// Some source file
-int file_report(my_matrix &ar) {
-  ... 
-  for (day_idx i = 0; i < 365; ++i) {
-    for (employee_id_idx j = 0; j < n_emps(); ++j) {
-      for (report_idx k = 0; k < f(j); ++k) {
-        ...
-        // this results in a compile time error because index j (the employee's id) is used in the
-        // dimension for report id
-        do_thing(ar[i][j][j]);
-        // This would compile correctly
-        do_thing(ar[i][j][k]);
-      }
+void clear_game_board(TwoDimMat<int, y_dim, x_dim> *board, x_dim width, y_dim height) {
+  for (x_dim i(0); i < width; ++i) {
+    for (y_dim j(0); j < height; ++j) {
+      // ERROR! in indexing
+      board[i][j] = 0;
+      // board[j][i] = 0 works!
     }
   }
 }
 ```
-Even though the above code has terrible naming for its variables, typos can still be found by the type checker.
-AND even if the programmer refuses to use the explicit types given for the dimension and insists on using `int`, 
-the poor soul forced to debug his code can at least find the declaration of the `my_matrix` type and find the 
-meaning of each dimension.
+
+Since each dimension of a multi-dimensional array can have a different type, misindexing
+into dimensions is now a thing of the past. But what if you **want** to compute the
+transpose? Well... then you have several options, but you have to do both _explicitly_.
+Here's one such approach that shows explicit conversion between types.
+
+```c++
+// compute transpose
+// i,j now have the correct types to index in as [i][j] 
+for (y_dim i(0); i < height; ++i) {
+  for (x_dim j(0); j < width; ++j) {
+    auto &start = my_matrix[i][j];
+    auto &transposition = my_matrix[index_cast<y_dim>(j)][index_cast<x_dim>(i)];
+    swap(start, transposition);
+  }
+}
+```
+
+This template function `index_cast<>` is just shorthand for the strikingly ugly manual
+cast `x_dim(int(i))`. 
