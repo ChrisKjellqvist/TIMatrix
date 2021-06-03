@@ -146,7 +146,10 @@ struct int_index : free_index<int_index> {
 };
 
 
-#define declare_free_index(tyname) struct tyname : free_index<tyname> { explicit tyname (IDX_STORAGE_TY d) : free_index(d) {}}; \
+#define declare_free_index(tyname) struct tyname : free_index<tyname> {\
+explicit tyname (IDX_STORAGE_TY d) : free_index(d) {}\
+tyname () = default; \
+}; \
 tyname operator "" _ ## tyname (unsigned long long value);
 
 #define add_UDL_idx(tyname) \
