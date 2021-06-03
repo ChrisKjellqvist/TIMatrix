@@ -127,6 +127,8 @@ public:
     n = d;
   }
 
+  free_index() = default;
+
   [[nodiscard]] int getN() const {
     return n;
   }
