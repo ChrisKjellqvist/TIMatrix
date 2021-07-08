@@ -14,7 +14,7 @@
 
 template<typename indexty, typename returnty>
 struct LayeredMatrix {
-  std::unique_ptr<returnty[]> mat = nullptr;
+  std::shared_ptr<returnty[]> mat = nullptr;
   using size_type = indexty;
   size_t mat_size;
   bool initialized = false;
