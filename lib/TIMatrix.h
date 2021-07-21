@@ -69,6 +69,9 @@ template<typename ty, typename idx1>
 struct OneDimMat : LayeredMatrix<idx1, ty> {
   void init(idx1 a) {
     this->set_mat(new ty[int(a)], a);
+    for (idx1 i(0); i < a; ++i) {
+      (*this)[i] = ty();
+    }
   }
 };
 
