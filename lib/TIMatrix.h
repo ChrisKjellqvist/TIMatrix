@@ -14,7 +14,7 @@
 
 template<typename indexty, typename returnty>
 struct LayeredMatrix {
-  std::unique_ptr<returnty[]> mat = nullptr;
+  std::shared_ptr<returnty[]> mat = nullptr;
   using size_type = indexty;
   size_t mat_size;
   bool initialized = false;
@@ -23,6 +23,11 @@ struct LayeredMatrix {
 
   returnty &operator[](indexty idx) {
     // how much of a performance thing is this? I hope it doesn't serialize our pipeline
+    assert(initialized);
+    return mat.get()[idx.getN()];
+  }
+
+  const returnty &operator[](indexty idx) const {
     assert(initialized);
     return mat.get()[idx.getN()];
   }
@@ -64,6 +69,9 @@ template<typename ty, typename idx1>
 struct OneDimMat : LayeredMatrix<idx1, ty> {
   void init(idx1 a) {
     this->set_mat(new ty[int(a)], a);
+    for (idx1 i(0); i < a; ++i) {
+      (*this)[i] = ty();
+    }
   }
 };
 
