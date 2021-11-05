@@ -90,9 +90,10 @@ Here's one such approach that shows explicit conversion between types.
 
 ```c++
 // compute transpose
-// i,j now have the correct types to index in as [i][j] 
+// i,j now have the correct types to index in as [i][j]
+assert(height == width);
 for (y_dim i(0); i < height; ++i) {
-  for (x_dim j(0); j < width; ++j) {
+  for (x_dim j = index_cast<x_dim>(i); j < width; ++j) {
     auto &start = my_matrix[i][j];
     auto &transposition = my_matrix[index_cast<y_dim>(j)][index_cast<x_dim>(i)];
     swap(start, transposition);
