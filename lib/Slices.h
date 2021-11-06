@@ -1,5 +1,5 @@
 //
-// Created by martin on 2021-05-27.
+// TIIndex  Copyright (C) 2021 Chris Kjellqvist
 //
 
 #ifndef STATISTICAL_ROBUST_SLICES_H

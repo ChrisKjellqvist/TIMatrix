@@ -1,5 +1,5 @@
 //
-// Created by cmk91 on 5/26/21.
+// TIIndex  Copyright (C) 2021 Chris Kjellqvist
 //
 
 #ifndef TIMATRIX_TIMATRIX_H

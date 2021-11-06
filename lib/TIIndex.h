@@ -1,5 +1,5 @@
 //
-// Created by cmk91 on 5/26/21.
+// TIIndex  Copyright (C) 2021 Chris Kjellqvist
 //
 
 #ifndef TIMATRIX_TIINDEX_H
@@ -9,9 +9,6 @@
 
 #define IDX_STORAGE_TY int
 
-namespace std {
-  struct typed_index_tag {};
-}
 
 template<typename idx2, typename idx1>
 idx2 index_cast(const idx1 &I) {
@@ -23,8 +20,6 @@ class free_index {
   IDX_STORAGE_TY n;
 public:
   typedef free_index difference_type;
-  typedef ty value_type;
-  typedef std::typed_index_tag iterator_category;
 
   free_index &operator++() {
     n++;
